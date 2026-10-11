@@ -1,0 +1,29 @@
+{
+  "format": "muweave-interactive-module",
+  "format_version": 3,
+  "id": "power_functions",
+  "version": "20261011.173544",
+  "entry": "embed.html",
+  "canonical_url": "https://georg184.github.io/power_functions/",
+  "title": {
+    "de": "Potenzfunktionen – Aufgabengenerator",
+    "en": "Power functions – exercise generator",
+    "fr": "Fonctions puissances – générateur d’exercices"
+  },
+  "offline": true,
+  "state_version": 1,
+  "preferred_height": "18cm",
+  "permissions": [],
+  "ai": {
+    "kind": "exercise-generator",
+    "learning_objectives": [
+      "Rewrite power-function expressions in standard form using power laws and like terms",
+      "Distinguish the independent variable, positive integer degree and nonzero coefficient",
+      "Treat additional letters as fixed nonzero real parameters",
+      "Preserve excluded domain values when cancelling factors and determine the missing value for a power-function extension"
+    ]
+  },
+  "default_activity": "main",
+  "activities": {},
+  "runtime_requirements": {"math": "muweave-mathjax-4-svg-v1"}
+}
