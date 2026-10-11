@@ -12,7 +12,7 @@
  */
 (function (root) {
   'use strict';
-  const VERSION = '20261011.173544';
+  const VERSION = '20261011.175718';
   const STATE_VERSION = 1;
   const MODES = ['numbers', 'parameters'];
   const LEVELS = ['progressive', 'easy', 'medium', 'hard'];

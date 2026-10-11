@@ -1,7 +1,7 @@
 /* UI and complete learner-state adapter for the power-function generator. */
 (function () {
   'use strict';
-  const APP_VERSION = '20261011.173544';
+  const APP_VERSION = '20261011.175718';
   const core = window.PowerFunctionsCore;
   const bridge = window.MuWeaveModuleBridge || null;
   const storageKey = 'power-functions-state-v1';
@@ -111,6 +111,14 @@
     }
   }
 
+  /** Report a usable layout height after the host makes this occurrence visible. */
+  function reportHeight() {
+    if (!bridge?.isInitialized()) return;
+    const height = Math.ceil(document.body.getBoundingClientRect().height);
+    // A closed applet has no layout box; the bridge accepts only positive heights.
+    if (height > 0) bridge.reportPreferredHeight(height);
+  }
+
   /** Serialize typesetting so fast UI actions cannot race different sheets. */
   function typeset() {
     queue = queue.then(async () => {
@@ -119,7 +127,7 @@
       if (!window.MathJax.typesetPromise) throw new Error('MathJax unavailable');
       await window.MathJax.typesetPromise([root]);
       if (root.querySelector('mjx-merror, [data-mjx-error]')) throw new Error('Invalid formula');
-      if (bridge?.isInitialized()) bridge.reportPreferredHeight(Math.ceil(document.body.getBoundingClientRect().height));
+      reportHeight();
       root.dataset.mathReady = 'true';
     }).catch(() => fail('mathError'));
     return queue;
@@ -241,7 +249,5 @@
     initialize(restored);
     if (!storageAvailable && !locked) document.getElementById('notice').textContent = text('saveError');
   }
-  new ResizeObserver(() => {
-    if (bridge?.isInitialized()) bridge.reportPreferredHeight(Math.ceil(document.body.getBoundingClientRect().height));
-  }).observe(document.body);
+  new ResizeObserver(reportHeight).observe(document.body);
 })();

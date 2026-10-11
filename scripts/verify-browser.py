@@ -196,7 +196,10 @@ def verify_bridge(context: BrowserContext, directory: Path) -> None:
 
 
 def verify_pyhtml(context: BrowserContext, directory: Path) -> None:
-    """Exercise the installed PyHTML host and its independent inline/tab instances.
+    """Exercise inline/tab instances and initialization inside a closed applet.
+
+    A hidden applet has zero layout height. Initialization must not send an
+    invalid height or misdiagnose the resulting bridge error as failed math.
 
     Args:
         context: Isolated browser context with network requests blocked.
@@ -204,6 +207,13 @@ def verify_pyhtml(context: BrowserContext, directory: Path) -> None:
     """
     page = context.new_page()
     page.goto((directory / "smoke.html").as_uri())
+    dialog = page.locator('[data-muweave-applet-dialog]')
+    expect(dialog).not_to_be_visible()
+    applet_root = dialog.locator('[data-muweave-interactive-instance="power-applet"]')
+    expect(applet_root).to_have_attribute("data-muweave-interactive-ready", "true")
+    applet_child = applet_root.locator("iframe").element_handle().content_frame()
+    assert applet_child is not None
+    ready(applet_child)
     root = page.locator('[data-muweave-interactive-instance="power-inline"]')
     expect(root).to_have_attribute("data-muweave-interactive-ready", "true")
     child = root.locator("iframe").element_handle().content_frame()
@@ -227,6 +237,22 @@ def verify_pyhtml(context: BrowserContext, directory: Path) -> None:
     tab_child.locator("summary").first.click()
     ready(tab_child)
     popup.close()
+    opener = page.get_by_role('link', name='Applet öffnen', exact=True)
+    opener.focus()
+    opener.press('Enter')
+    expect(dialog).to_be_visible()
+    exercise(applet_child, keyboard=True)
+    questions = applet_child.locator('.question').evaluate_all('nodes=>nodes.map(node=>node.innerHTML)')
+    dialog.locator('[data-muweave-applet-close]').focus()
+    dialog.locator('[data-muweave-applet-close]').press('Enter')
+    expect(dialog).not_to_be_visible()
+    ready(applet_child)
+    opener.focus()
+    opener.press('Enter')
+    expect(dialog).to_be_visible()
+    ready(applet_child)
+    expect(applet_child.locator('details[open]')).to_have_count(1)
+    assert applet_child.locator('.question').evaluate_all('nodes=>nodes.map(node=>node.innerHTML)') == questions
     page.close()
 
 
@@ -304,7 +330,7 @@ def main() -> None:
             print("Real MuWeb bridge: compact/full, typography, restore, snapshots and disabled state passed.", flush=True)
         if args.only in ("all", "pyhtml"):
             verify_pyhtml(context, directory)
-            print("Installed PyHTML: offline inline and tab occurrences passed.", flush=True)
+            print("Installed PyHTML: offline inline, tab and initially closed applet occurrences passed.", flush=True)
         browser.close()
     assert not requests, requests
     assert not errors, errors

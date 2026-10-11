@@ -72,7 +72,10 @@ fixture.mount();
     source = directory / "smoke.muweave"
     source.write_text(
         'µblock.interactive("power_functions", instance="power-inline", presentation="compact")\n\n'
-        'µblock.interactive("power_functions", instance="power-tab", presentation="full", open="tab")\n',
+        'µblock.interactive("power_functions", instance="power-tab", presentation="full", open="tab")\n\n'
+        'µblock.applet[url="https://georg184.github.io/power_functions/", title="Power functions"]{\n'
+        'µblock.interactive("power_functions", instance="power-applet", presentation="compact")\n'
+        ',,\nPractice power functions with optional worked solutions.\n}\n',
         encoding="utf-8",
     )
     subprocess.run([sys.executable, "-m", "pyhtml", str(source), "--output", str(directory / "smoke.html"),

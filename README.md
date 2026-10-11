@@ -90,7 +90,8 @@ dieselbe Prüfung vor einer Veröffentlichung gegen die lokalen Quellen ausführ
 
 Die Vorbereitung baut ein frisches Modul, eine Offline-Seite, einen echten
 sandboxierten Bridge-Host und eine unabhängige PyHTML-Datei mit Inline- und
-Tab-Einbindung. Alle Testdaten bleiben unter `/tmp`. Die Browserprüfung sperrt
+Tab-Einbindung sowie einen zunächst geschlossenen Applet-Dialog. Alle Testdaten
+bleiben unter `/tmp`. Die Browserprüfung sperrt
 Netzwerkzugriffe und prüft unter anderem Lösungen, Sprachen, mobile Breite,
 Snapshot/Wiederherstellung, abweichende Host-Typografie, Speichersperre und
 sichtbare Fehler bei fehlender Mathematik-Laufzeit oder gemischten Versionen.
